@@ -1,6 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 type TeamMember = {
   id: number;
@@ -35,27 +38,27 @@ const teamMembers: TeamMember[] = [
   {
     id: 4,
     name: "Ojan",
-    role: "8-11-2007",
+    role: "08-11-2007",
     image: "/img/ojan.jpg",
     quote: "Story creates impact",
   },
   {
     id: 5,
-    name: "galih",
-    role: "",
-    image: "/img/team-5.jpg",
-    quote: "Teamwork wins",
+    name: "Galih",
+    role: "12-11-2007",
+    image: "/img/galih.jpg",
+    quote: "Tidak ada kata kata adanya bukti nyata",
   },
   {
     id: 6,
     name: "Ferdinand",
-    role: "",
-    image: "/img/team-6.jpg",
+    role: "05-07-2008",
+    image: "/img/bone.jpg",
     quote: "Growth mindset",
   },
   {
     id: 7,
-    name: "ihsan permana",
+    name: "Ihsan Permana",
     role: "",
     image: "/img/team-7.jpg",
     quote: "Code everywhere",
@@ -76,14 +79,21 @@ const teamMembers: TeamMember[] = [
   },
   {
     id: 10,
-    name: "",
-    role: "Fullstack",
+    name: "Mora",
+    role: "",
     image: "/img/team-10.jpg",
     quote: "Solve real problems",
   },
+  {
+    id: 11,
+    name: "Farel",
+    role: "",
+    image: "/img/team-11.jpg",
+    quote: "Simplicity is the ultimate sophistication",
+  },
 ];
 
-/* Animation */
+/* Framer Motion */
 const container = {
   hidden: {},
   show: {
@@ -99,19 +109,43 @@ const item = {
 };
 
 export default function About() {
+  /* INIT AOS */
+  useEffect(() => {
+    AOS.init({
+      duration: 900,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 80,
+    });
+  }, []);
+
   return (
     <section id="about" className="bg-[#020617] px-4 sm:px-6 lg:px-20 py-24">
       {/* TITLE */}
       <div className="text-center mb-16">
-        <div className="w-20 h-2 bg-cyan-400 mx-auto mb-6 rounded-full" />
-        <h2 className="text-4xl font-extrabold text-white">About us</h2>
-        <p className="mt-3 text-gray-400">
+        <div
+          data-aos="zoom-in"
+          className="w-20 h-2 bg-cyan-400 mx-auto mb-6 rounded-full"
+        />
+        <h2
+          data-aos="fade-up"
+          data-aos-delay="100"
+          className="text-4xl font-extrabold text-white"
+        >
+          About Us
+        </h2>
+        <p
+          data-aos="fade-up"
+          data-aos-delay="200"
+          className="mt-3 text-gray-400"
+        >
           People who make everything possible
         </p>
       </div>
 
-      {/* DESKTOP GRID / MOBILE SLIDER */}
+      {/* GRID / MOBILE SLIDER */}
       <motion.div
+        data-aos="fade-up"
         variants={container}
         initial="hidden"
         whileInView="show"
@@ -130,15 +164,16 @@ export default function About() {
           max-md:pb-6
         "
       >
-        {teamMembers.map((member) => (
+        {teamMembers.map((member, index) => (
           <motion.div
             key={member.id}
             variants={item}
+            data-aos="fade-up"
+            data-aos-delay={index * 80}
             className="
               relative
               snap-center
               min-w-[160px]
-
               [perspective:1000px]
             "
           >
@@ -178,7 +213,9 @@ export default function About() {
                 </div>
 
                 <h3 className="text-white font-semibold">{member.name}</h3>
-                <p className="text-sm text-cyan-400 mt-1">{member.role}</p>
+                {member.role && (
+                  <p className="text-sm text-cyan-400 mt-1">{member.role}</p>
+                )}
               </div>
 
               {/* BACK */}
