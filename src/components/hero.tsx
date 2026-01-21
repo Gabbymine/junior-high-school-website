@@ -1,19 +1,46 @@
 "use client";
 
-import {
-  motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const images = ["/img/ojan.jpg", "/img/ojan2.jpg", "/img/ojan3.jpg"];
+/* ================= PARTICLE ================= */
+const Particle = ({
+  delay,
+  size = 1,
+  opacity = 0.6,
+}: {
+  delay: number;
+  size?: number;
+  opacity?: number;
+}) => (
+  <motion.span
+    className="absolute bg-cyan-400 rounded-full"
+    style={{
+      width: size,
+      height: size,
+      opacity,
+    }}
+    initial={{
+      x: Math.random() * window.innerWidth,
+      y: window.innerHeight + 60,
+    }}
+    animate={{
+      y: -200,
+      opacity: [0, opacity, opacity, 0],
+    }}
+    transition={{
+      duration: 10 + Math.random() * 8,
+      repeat: Infinity,
+      delay,
+      ease: "linear",
+    }}
+  />
+);
 
 export default function Hero() {
-  /* INIT AOS */
+  /* ================= AOS ================= */
   useEffect(() => {
     AOS.init({
       duration: 900,
@@ -23,158 +50,132 @@ export default function Hero() {
     });
   }, []);
 
-  /* PARALLAX */
+  /* ================= PARALLAX ================= */
   const { scrollY } = useScroll();
-  const textY = useTransform(scrollY, [0, 400], [0, -30]);
-  const imageY = useTransform(scrollY, [0, 400], [0, 50]);
-
-  /* SLIDER STATE */
-  const [[index, direction], setIndex] = useState<[number, number]>([0, 0]);
-  const [paused, setPaused] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const paginate = (dir: number) => {
-    setIndex(([prev]) => [(prev + dir + images.length) % images.length, dir]);
-  };
-
-  /* AUTO SLIDE */
-  useEffect(() => {
-    if (paused) return;
-
-    intervalRef.current = setInterval(() => {
-      paginate(1);
-    }, 3000);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [paused]);
+  const textY = useTransform(scrollY, [0, 500], [0, -40]);
+  const bgY = useTransform(scrollY, [0, 500], [0, 60]);
 
   return (
     <section
       id="home"
       className="
-        relative flex items-center overflow-hidden
+        relative flex items-center justify-center
+        overflow-hidden
         min-h-[calc(115vh-75px)]
         pt-[64px] sm:pt-[72px] lg:pt-[80px]
         bg-gradient-to-br from-[#050B14] via-[#070F1F] to-[#020617]
         px-4 sm:px-6 lg:px-20
       "
     >
-      {/* BACKGROUND GLOW */}
-      <div className="absolute -top-40 -right-40 w-[520px] h-[520px] bg-[#22D3EE]/20 blur-[160px]" />
-      <div className="absolute -bottom-40 -left-40 w-[520px] h-[520px] bg-[#7C3AED]/20 blur-[160px]" />
+      {/* ================= BACKGROUND LAYERS ================= */}
+      <motion.div
+        style={{ y: bgY }}
+        className="absolute inset-0 pointer-events-none z-0"
+      >
+        {/* Soft Glow Fog */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.12),transparent_70%)]" />
 
-      <div className="relative z-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-        {/* TEXT */}
+        {/* BACK PARTICLES */}
+        {[...Array(25)].map((_, i) => (
+          <Particle key={`b-${i}`} delay={i * 0.4} size={1} opacity={0.35} />
+        ))}
+
+        {/* FRONT PARTICLES */}
+        {[...Array(20)].map((_, i) => (
+          <Particle key={`f-${i}`} delay={i * 0.5} size={2} opacity={0.8} />
+        ))}
+
+        {/* FLOATING ORBS */}
         <motion.div
-          data-aos="fade-up"
-          style={{ y: textY }}
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-center lg:text-left"
-        >
-          <h1
-            data-aos="zoom-in"
-            data-aos-delay="150"
-            className="text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight"
-          >
-            <span
-              className="
-                block bg-gradient-to-r from-[#22D3EE] via-[#7C3AED] to-[#EC4899]
-                bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient
-              "
-            >
-              Welcome To
-            </span>
+          className="absolute top-24 left-10 w-48 h-48 bg-cyan-400/30 rounded-full blur-3xl"
+          animate={{ y: [0, -120, 0], x: [0, 80, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        />
 
-            <span
-              className="
-                block mt-2 bg-gradient-to-r from-[#22D3EE] via-[#7C3AED] to-[#EC4899]
-                bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient
-              "
-            >
-              Keluh Kesah Basah
-            </span>
-          </h1>
-
-          <p
-            data-aos="fade-up"
-            data-aos-delay="300"
-            className="mt-6 text-base sm:text-lg md:text-xl text-[#E5E7EB]/70 max-w-xl mx-auto lg:mx-0"
-          >
-            Where authentic friendships flourish and every moment becomes a
-            cherished memory.
-          </p>
-        </motion.div>
-
-        {/* IMAGE SLIDER */}
         <motion.div
-          data-aos="fade-left"
-          data-aos-delay="200"
-          style={{ y: imageY }}
-          className="relative w-full flex flex-col items-center"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onTouchStart={() => setPaused(true)}
-          onTouchEnd={() => setPaused(false)}
+          className="absolute bottom-24 right-16 w-56 h-56 bg-violet-500/30 rounded-full blur-3xl"
+          animate={{ y: [0, 140, 0], x: [0, -100, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* GEOMETRY */}
+        <motion.div
+          className="absolute top-1/3 right-1/4 w-24 h-24 border border-cyan-400/50 rotate-12"
+          animate={{ rotate: [12, 360], y: [0, -80, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+
+        <motion.div
+          className="
+            absolute bottom-36 left-1/4
+            w-0 h-0
+            border-l-[32px] border-l-transparent
+            border-r-[32px] border-r-transparent
+            border-b-[64px] border-b-pink-500/50
+          "
+          animate={{ y: [0, -90, 0], rotate: [0, 360] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+        />
+      </motion.div>
+
+      {/* ================= CONTENT ================= */}
+      <motion.div
+        data-aos="fade-up"
+        style={{ y: textY }}
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2 }}
+        className="relative z-10 max-w-4xl mx-auto text-center"
+      >
+        <h1
+          data-aos="zoom-in"
+          data-aos-delay="150"
+          className="
+            font-extrabold leading-tight tracking-tight
+            text-4xl sm:text-5xl md:text-6xl lg:text-7xl
+          "
         >
-          <div
+          <span
             className="
-              relative w-full overflow-hidden rounded-xl
-              h-[calc(100vh-96px)]
-              sm:h-[420px] lg:h-[460px]
-              max-w-md sm:max-w-lg
+              block
+              bg-gradient-to-r from-[#22D3EE] via-[#7C3AED] to-[#EC4899]
+              bg-[length:200%_200%]
+              bg-clip-text text-transparent
+              animate-gradient
+              drop-shadow-[0_0_24px_rgba(34,211,238,0.35)]
             "
           >
-            <AnimatePresence initial={false} custom={direction}>
-              <motion.img
-                key={index}
-                src={images[index]}
-                alt="Hero Slide"
-                className="absolute inset-0 w-full h-full object-cover rounded-xl"
-                initial={{ x: direction > 0 ? 300 : -300, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.9}
-                onDragEnd={(_, info) => {
-                  if (info.offset.x > 120) paginate(-1);
-                  if (info.offset.x < -120) paginate(1);
-                }}
-              />
-            </AnimatePresence>
+            Welcome To
+          </span>
 
-            {/* IMAGE GLOW */}
-            <div className="absolute inset-0 bg-[#7C3AED]/25 blur-3xl rounded-full -z-10" />
-          </div>
-
-          {/* DOT INDICATOR */}
-          <div
-            data-aos="fade-up"
-            data-aos-delay="400"
-            className="flex gap-3 mt-6"
+          <span
+            className="
+              block mt-3
+              bg-gradient-to-r from-[#22D3EE] via-[#7C3AED] to-[#EC4899]
+              bg-[length:200%_200%]
+              bg-clip-text text-transparent
+              animate-gradient
+              drop-shadow-[0_0_30px_rgba(124,58,237,0.4)]
+            "
           >
-            {images.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setIndex([i, i > index ? 1 : -1])}
-                className={`
-                  w-3 h-3 rounded-full transition
-                  ${
-                    i === index
-                      ? "bg-[#22D3EE] shadow-[0_0_12px_#22D3EE]"
-                      : "bg-white/30 hover:bg-white/50"
-                  }
-                `}
-              />
-            ))}
-          </div>
-        </motion.div>
-      </div>
+            Keluh Kesah Basah
+          </span>
+        </h1>
+
+        <p
+          data-aos="fade-up"
+          data-aos-delay="300"
+          className="
+            mt-8
+            text-lg sm:text-xl md:text-2xl
+            text-[#E5E7EB]/75
+            max-w-2xl mx-auto
+          "
+        >
+          Where authentic friendships flourish and every moment becomes a
+          cherished memory.
+        </p>
+      </motion.div>
     </section>
   );
 }

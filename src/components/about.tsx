@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
+/* ================= TYPES ================= */
 type TeamMember = {
   id: number;
   name: string;
@@ -13,6 +14,7 @@ type TeamMember = {
   quote: string;
 };
 
+/* ================= DATA ================= */
 const teamMembers: TeamMember[] = [
   {
     id: 1,
@@ -32,7 +34,7 @@ const teamMembers: TeamMember[] = [
     id: 3,
     name: "Raisa",
     role: "12-3-2008",
-    image: "/img/team-3.jpg",
+    image: "/img/raisa.jpg",
     quote: "Logic above all",
   },
   {
@@ -93,7 +95,7 @@ const teamMembers: TeamMember[] = [
   },
 ];
 
-/* Framer Motion */
+/* ================= ANIMATION ================= */
 const container = {
   hidden: {},
   show: {
@@ -108,8 +110,30 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
+/* ================= PARTICLE ================= */
+const Particle = ({ delay }: { delay: number }) => (
+  <motion.span
+    className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-60"
+    initial={{
+      x: Math.random() * window.innerWidth,
+      y: window.innerHeight + 50,
+      opacity: 0,
+    }}
+    animate={{
+      y: -150,
+      opacity: [0, 1, 1, 0],
+    }}
+    transition={{
+      duration: 10 + Math.random() * 6,
+      repeat: Infinity,
+      delay,
+      ease: "linear",
+    }}
+  />
+);
+
+/* ================= COMPONENT ================= */
 export default function About() {
-  /* INIT AOS */
   useEffect(() => {
     AOS.init({
       duration: 900,
@@ -120,122 +144,130 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" className="bg-[#020617] px-4 sm:px-6 lg:px-20 py-24">
-      {/* TITLE */}
-      <div className="text-center mb-16">
-        <div
-          data-aos="zoom-in"
-          className="w-20 h-2 bg-cyan-400 mx-auto mb-6 rounded-full"
+    <section
+      id="about"
+      className="relative bg-[#020617] px-4 sm:px-6 lg:px-20 py-24 overflow-hidden"
+    >
+      {/* ================= PARTICLE LAYER ================= */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {/* Particles */}
+        {[...Array(30)].map((_, i) => (
+          <Particle key={i} delay={i * 0.3} />
+        ))}
+
+        {/* Glow Orbs */}
+        <motion.div
+          className="absolute top-24 left-20 w-44 h-44 bg-cyan-400/20 rounded-full blur-3xl"
+          animate={{ y: [0, -80, 0], x: [0, 60, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
-        <h2
-          data-aos="fade-up"
-          data-aos-delay="100"
-          className="text-4xl font-extrabold text-white"
-        >
-          About Us
-        </h2>
-        <p
-          data-aos="fade-up"
-          data-aos-delay="200"
-          className="mt-3 text-gray-400"
-        >
-          People who make everything possible
-        </p>
+
+        <motion.div
+          className="absolute bottom-20 right-32 w-52 h-52 bg-violet-500/20 rounded-full blur-3xl"
+          animate={{ y: [0, 100, 0], x: [0, -80, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Floating Square */}
+        <motion.div
+          className="absolute top-1/3 right-1/4 w-20 h-20 border border-cyan-400/40 rotate-12"
+          animate={{ rotate: [12, 180, 360], y: [0, -60, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+        />
       </div>
 
-      {/* GRID / MOBILE SLIDER */}
-      <motion.div
-        data-aos="fade-up"
-        variants={container}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        className="
-          grid gap-8
-          grid-cols-2
-          sm:grid-cols-3
-          md:grid-cols-4
-          lg:grid-cols-5
-
-          max-md:flex
-          max-md:overflow-x-auto
-          max-md:snap-x
-          max-md:snap-mandatory
-          max-md:pb-6
-        "
-      >
-        {teamMembers.map((member, index) => (
-          <motion.div
-            key={member.id}
-            variants={item}
+      {/* ================= CONTENT ================= */}
+      <div className="relative z-10">
+        {/* TITLE */}
+        <div className="text-center mb-16">
+          <div
+            data-aos="zoom-in"
+            className="w-20 h-2 bg-cyan-400 mx-auto mb-6 rounded-full"
+          />
+          <h2
             data-aos="fade-up"
-            data-aos-delay={index * 80}
-            className="
-              relative
-              snap-center
-              min-w-[160px]
-              [perspective:1000px]
-            "
+            data-aos-delay="100"
+            className="text-4xl font-extrabold text-white"
           >
-            {/* FLIP CARD */}
-            <div
+            About Us
+          </h2>
+          <p
+            data-aos="fade-up"
+            data-aos-delay="200"
+            className="mt-3 text-gray-400"
+          >
+            People who make everything possible
+          </p>
+        </div>
+
+        {/* GRID / SLIDER */}
+        <motion.div
+          data-aos="fade-up"
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="
+            grid gap-8
+            grid-cols-2
+            sm:grid-cols-3
+            md:grid-cols-4
+            lg:grid-cols-5
+
+            max-md:flex
+            max-md:overflow-x-auto
+            max-md:snap-x
+            max-md:snap-mandatory
+            max-md:pb-6
+          "
+        >
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={member.id}
+              variants={item}
+              data-aos="fade-up"
+              data-aos-delay={index * 80}
               className="
-                relative w-full h-[260px]
-                transition-transform duration-700
-                [transform-style:preserve-3d]
-                hover:[transform:rotateY(180deg)]
+                relative
+                snap-center
+                min-w-[160px]
+                [perspective:1000px]
               "
             >
-              {/* FRONT */}
+              {/* FLIP CARD */}
               <div
                 className="
-                  absolute inset-0
-                  bg-[#050B14]
-                  rounded-2xl p-6
-                  flex flex-col items-center text-center
-                  backface-hidden
+                  relative w-full h-[260px]
+                  transition-transform duration-700
+                  [transform-style:preserve-3d]
+                  hover:[transform:rotateY(180deg)]
                 "
               >
-                {/* Glow Ring */}
-                <div className="relative mb-4">
-                  <div className="absolute inset-0 rounded-full bg-cyan-400/30 blur-xl animate-pulse" />
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="
-                      relative
-                      w-24 h-24
-                      rounded-full
-                      object-cover
-                      border-2 border-cyan-400
-                    "
-                  />
+                {/* FRONT */}
+                <div className="absolute inset-0 bg-[#050B14] rounded-2xl p-6 flex flex-col items-center text-center backface-hidden">
+                  <div className="relative mb-4">
+                    <div className="absolute inset-0 rounded-full bg-cyan-400/30 blur-xl animate-pulse" />
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="relative w-24 h-24 rounded-full object-cover border-2 border-cyan-400"
+                    />
+                  </div>
+                  <h3 className="text-white font-semibold">{member.name}</h3>
+                  {member.role && (
+                    <p className="text-sm text-cyan-400 mt-1">{member.role}</p>
+                  )}
                 </div>
 
-                <h3 className="text-white font-semibold">{member.name}</h3>
-                {member.role && (
-                  <p className="text-sm text-cyan-400 mt-1">{member.role}</p>
-                )}
+                {/* BACK */}
+                <div className="absolute inset-0 bg-[#050B14] rounded-2xl p-6 flex items-center justify-center text-center [transform:rotateY(180deg)] backface-hidden">
+                  <p className="text-gray-300 italic">“{member.quote}”</p>
+                </div>
               </div>
-
-              {/* BACK */}
-              <div
-                className="
-                  absolute inset-0
-                  bg-[#050B14]
-                  rounded-2xl p-6
-                  flex items-center justify-center
-                  text-center
-                  [transform:rotateY(180deg)]
-                  backface-hidden
-                "
-              >
-                <p className="text-gray-300 italic">“{member.quote}”</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </section>
   );
 }
