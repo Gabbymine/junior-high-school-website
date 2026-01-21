@@ -93,7 +93,12 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative bg-[#020617] px-4 sm:px-6 lg:px-20 py-24 overflow-hidden"
+      className=" relative bg-[#020617]
+    px-4 sm:px-6 lg:px-20
+    -mt-24
+    pt-24
+    pb-24
+    overflow-hidden"
     >
       {/* ================= PARTICLE BACKGROUND ================= */}
       <div className="absolute inset-0 pointer-events-none z-0">
