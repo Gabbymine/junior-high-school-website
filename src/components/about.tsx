@@ -98,7 +98,8 @@ export default function About() {
     -mt-24
     pt-24
     pb-24
-    overflow-hidden"
+    overflow-hidden scroll-mt-[64px] sm:scroll-mt-[72px] lg:scroll-mt-[80px]
+"
     >
       {/* ================= PARTICLE BACKGROUND ================= */}
       <div className="absolute inset-0 pointer-events-none z-0">

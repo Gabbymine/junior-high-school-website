@@ -60,11 +60,11 @@ export default function Hero() {
       id="home"
       className="
         relative flex items-center justify-center
-        overflow-hidden
-        min-h-[calc(100vh-75px)]
-        pt-[64px] sm:pt-[72px] lg:pt-[80px]
-        bg-gradient-to-br from-[#050B14] via-[#070F1F] to-[#020617]
-        px-4 sm:px-6 lg:px-20
+    overflow-hidden
+    min-h-screen
+    pt-[64px] sm:pt-[72px] lg:pt-[80px]
+    bg-gradient-to-br from-[#050B14] via-[#070F1F] to-[#020617]
+    px-4 sm:px-6 lg:px-20
       "
     >
       {/* ================= BACKGROUND LAYERS ================= */}
