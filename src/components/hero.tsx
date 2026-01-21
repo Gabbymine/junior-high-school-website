@@ -61,7 +61,7 @@ export default function Hero() {
       className="
         relative flex items-center justify-center
         overflow-hidden
-        min-h-[calc(115vh-75px)]
+        min-h-[calc(107vh-75px)]
         pt-[64px] sm:pt-[72px] lg:pt-[80px]
         bg-gradient-to-br from-[#050B14] via-[#070F1F] to-[#020617]
         px-4 sm:px-6 lg:px-20
@@ -125,7 +125,8 @@ export default function Hero() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2 }}
-        className="relative z-10 max-w-4xl mx-auto text-center"
+        className="relative z-10 max-w-4xl mx-auto text-center
+  -mt-18 sm:-mt-10 md:mt-0"
       >
         <h1
           data-aos="zoom-in"
